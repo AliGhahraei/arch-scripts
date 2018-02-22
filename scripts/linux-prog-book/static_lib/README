@@ -1,0 +1,32 @@
+Run:
+
+$ gcc -c show_number.c
+$ gcc -c show_string.c
+
+
+
+And then link using library:
+
+$ ar crv libnumstring.a show_number.o show_string.o
+$ gcc -o test.out test.c -L. -lnumstring
+
+Or link with library compiling it together:
+
+$ ar crv libnumstring.a show_number.o show_string.o
+$ gcc -o test.out test.c libnumstring.a
+
+Or just use the object file:
+
+$ gcc -o test.out test.c show_number.o
+
+Or compile them together ignoring your show_number.o file
+
+$ gcc -o test.out test.c show_number.c
+
+
+
+... Finally:
+$ ./test.out
+
+You can use gcc -c test.c to create a test.o file and then link it
+with the library file replacing test.c with test.o in any step

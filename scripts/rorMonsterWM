@@ -1,0 +1,6 @@
+#!/bin/bash
+#Miniscript para implementar runorraise en MonsterWM
+
+if [ -z "$(ps -C "$1"| grep "$1")" ]; then
+    $@
+fi

@@ -1,0 +1,1 @@
+yaourt -Sya; echo $(echo "$(yaourt -Qua)" | wc -l) > /home/ali/actualizaciones

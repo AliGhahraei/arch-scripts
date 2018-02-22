@@ -1,0 +1,8 @@
+#!/bin/bash
+
+hayVentana=$(i3-msg "[class=^$1$] focus")
+
+if [[ $hayVentana != *"true"* ]];then
+	i3-msg "workspace $3"
+	$2
+fi

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Límite de descarga
+LIMITE="11"
+# Ubicación de la batería
+BATERIA="/sys/class/power_supply/BAT1/"
+
+notify-send="hi"
+
+# Estado de la batería
+ESTADO=$(cat $BATERIA/status)
+if [ "$ESTADO" == "Discharging" ]; then
+    CARGA=$(cat $BATERIA/capacity)
+    if [ "$CARGA" -lt "$LIMITE" ]; then
+        notify-send --urgency=critical "La pila ya fue" "Corre, ganapán"
+    fi
+fi
