@@ -1,11 +1,3 @@
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-#plugins=(
-#  git
-#  zsh-autosuggestions
-#  zsh-syntax-highlighting
-#  zsh-history-substring-search
-#)
-
 [[ -r ~/.profile ]] && source ~/.profile
 
 fpath=( "$HOME/.zfunctions" $fpath )

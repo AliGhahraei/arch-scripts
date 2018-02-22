@@ -5,10 +5,6 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk
 
 export PYTHONPATH=~/spectrum-net:$PYTHONPATH
 
-function cd {
-        builtin cd "$@" && ls
-}
-
 # Work
 alias cw='cd ~/Documents/spectrum-net'
 

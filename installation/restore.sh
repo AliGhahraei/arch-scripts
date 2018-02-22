@@ -4,6 +4,7 @@ EMACS_VC="$VC/emacs"
 
 EMACS_DEST="$HOME/.emacs.d/"
 EMACS_CONFIG_DEST="$EMACS_DEST/config/"
+FISH="$HOME/.config/fish/config.fish"
 
 mkdir -p $EMACS_CONFIG_DEST
 
@@ -11,6 +12,7 @@ ln -sf $EMACS_VC/init.el $EMACS_DEST
 ln -sf $EMACS_VC/packages.el $EMACS_CONFIG_DEST
 ln -sf $EMACS_VC/base.el $EMACS_CONFIG_DEST
 
+ln -sf $VC/config.fish $FISH
 ln -sf $VC/.bash_profile $HOME
 ln -sf $VC/.bashrc $HOME
 ln -sf $VC/.zprofile $HOME
