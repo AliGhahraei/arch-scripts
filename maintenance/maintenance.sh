@@ -13,7 +13,7 @@ warning () {
 }
 
 err () {
-   printf "${RED}$1${NO_COLOR}\n"
+   printf "${RED}$1!${NO_COLOR}\n"
    exit 1
 }
 
@@ -29,17 +29,22 @@ if [[ $(uname) == 'Darwin' ]]; then
    message 'Upgrading brew...'
    brew update && brew upgrade && brew cask upgrade
 else
-   err 'Unsupported platform!'
+   err 'Unsupported platform'
 fi
 
 message 'Upgrading pip...'
 pip3 list --format=freeze --outdated | cut -d = -f 1 | xargs -n1 pip3 install -U
 
-message 'Upgrading fisher...'
+message 'Upgrading shell...'
 ./fisher_update.fish
 
 message 'Checking git repos'
 check_clean_tree ~/g/scripts
 check_clean_tree ~/g/dotfiles
+
+message 'Launching backup tool'
+open -a MEGAsync &
+
+warning 'Remember to update Emacs manually'
 
 message 'Finished'
