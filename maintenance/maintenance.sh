@@ -4,6 +4,8 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NO_COLOR='\033[0m'
 
+CURRENT_DIR=$( dirname "${BASH_SOURCE[0]}" )
+
 message () {
    printf "${GREEN}$1${NO_COLOR}\n"
 }
@@ -36,7 +38,7 @@ message 'Upgrading pip...'
 pip3 list --format=freeze --outdated | cut -d = -f 1 | xargs -n1 pip3 install -U
 
 message 'Upgrading shell...'
-./fisher_update.fish
+$CURRENT_DIR/./fisher_update.fish
 
 message 'Checking git repos'
 check_clean_tree ~/g/scripts
