@@ -1,21 +1,21 @@
 #!/usr/bin/env sh
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NO_COLOR='\033[0m'
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[1;33m'
+no_color='\033[0m'
 
-CURRENT_DIR=$( dirname "${BASH_SOURCE[0]}" )
+current_dir=$( dirname "${BASH_SOURCE[0]}" )
 
 message () {
-   printf "${GREEN}$1${NO_COLOR}\n"
+   printf "${green}$1${no_color}\n"
 }
 
 warning () {
-   printf "${YELLOW}$1${NO_COLOR}\n"
+   printf "${yellow}$1${no_color}\n"
 }
 
 err () {
-   printf "${RED}$1!${NO_COLOR}\n"
+   printf "${red}$1!${no_color}\n"
    exit 1
 }
 
@@ -26,19 +26,27 @@ check_clean_tree () {
    fi
 }
 
+pip_package_upgrade="pip3 list --format=freeze --outdated | cut -d = -f 1 | xargs -n1 pip3 install -U"
+pip_upgrade="pip3 install --upgrade pip"
 
 if [[ $(uname) == 'Darwin' ]]; then
    message 'Upgrading brew...'
    brew update && brew upgrade && brew cask upgrade
+
+   message 'Upgrading pip...'
+   eval "sudo -H $pip_package_upgrade"
+   eval "sudo -H $pip_upgrade"
 else
-   err 'Unsupported platform'
+   err "Unsupported platform's package manager"
+
+   message 'Upgrading pip...'
+   eval "sudo $pip_package_upgrade"
+   eval "sudo $pip_upgrade"
 fi
 
-message 'Upgrading pip...'
-pip3 list --format=freeze --outdated | cut -d = -f 1 | xargs -n1 pip3 install -U
 
 message 'Upgrading shell...'
-$CURRENT_DIR/./fisher_update.fish
+$current_dir/./fisher_update.fish
 
 message 'Checking git repos'
 check_clean_tree ~/g/scripts
