@@ -3,7 +3,7 @@ from json import loads
 from os.path import expanduser, join
 from platform import system
 
-from crayons import red, green, yellow
+from crayons import red, green, yellow, blue
 from sh import brew, git, pip3
 
 
@@ -12,8 +12,12 @@ GIT_DIR = expanduser(join('~', 'g'))
 REPOS = 'scripts', 'dotfiles'
 
 
-def info(message):
+def task(message):
     print(green(message))
+
+
+def info(message):
+    print(blue(message))
 
 
 def warning(message):
@@ -50,22 +54,22 @@ def tree_clean(dir_):
     return not is_dirty
 
 
-info('Upgrading pip...')
+task('Upgrading pip...')
 pip_upgrade()
 
 if SYSTEM == 'Darwin':
-    info('Upgrading brew...')
+    task('Upgrading brew...')
     brew('update', _fg=True)
     brew('upgrade', _fg=True)
     brew('cask', 'upgrade', _fg=True)
 else:
     warning(f"Package managers for {SYSTEM} aren't supported")
 
-info('Checking git repos...')
+task('Checking git repos...')
 if all([tree_clean(join(GIT_DIR, repo)) for repo in REPOS]):
     info("Everything's clean!")
 
-info('Launching backup tool...')
+task('Launching backup tool...')
 os_open('-a', 'MEGAsync', _bg=True)
 warning('Remember to update Emacs manually')
 info('Done!')
