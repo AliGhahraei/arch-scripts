@@ -61,11 +61,11 @@ if SYSTEM == 'Darwin':
 else:
     warning(f"Package managers for {SYSTEM} aren't supported")
 
-info('Checking git repos')
+info('Checking git repos...')
 if all([tree_clean(join(GIT_DIR, repo)) for repo in REPOS]):
     info("Everything's clean!")
 
-info('Launching backup tool')
+info('Launching backup tool...')
 os_open('-a', 'MEGAsync', _bg=True)
 warning('Remember to update Emacs manually')
 info('Done!')
