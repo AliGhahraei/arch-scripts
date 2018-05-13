@@ -32,8 +32,8 @@ def error(message):
 if SYSTEM == 'Darwin':
     from sh import open as os_open
 else:
-    os_open = lambda *_, **__: warning(f'MEGAsync not supported for {SYSTEM}')
-
+    def os_open(*_, **__):
+        warning(f'MEGAsync not supported for {SYSTEM}')
 
 
 def pip_upgrade():
