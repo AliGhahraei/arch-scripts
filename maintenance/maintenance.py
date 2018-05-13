@@ -5,8 +5,7 @@ from os.path import expanduser, join
 from platform import system
 
 from crayons import green, yellow, blue
-#pylint: disable=no-name-in-module
-from sh import brew, git, pip3
+from sh import brew, git, pip3  #pylint: disable=no-name-in-module
 
 
 SYSTEM = system()
@@ -27,7 +26,7 @@ def warning(message):
 
 
 if SYSTEM == 'Darwin':
-    from sh import open as os_open
+    from sh import open as os_open  #pylint: disable=no-name-in-module
 else:
     def os_open(*_, **__):
         warning(f'MEGAsync not supported for {SYSTEM}')
@@ -44,9 +43,8 @@ def pip_upgrade():
 
 
 def tree_clean(dir_):
-    #pylint: disable=too-many-function-args
-    is_dirty = bool(git('-C', dir_, 'status', '--porcelain').stdout)
-
+    git_status = git('-C', dir_, 'status', '--porcelain') #pylint: disable=too-many-function-args
+    is_dirty = bool(git_status.stdout)
     if is_dirty:
         warning(f"{dir_}'s tree was not clean")
     return not is_dirty
