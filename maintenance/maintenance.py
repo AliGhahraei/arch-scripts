@@ -13,7 +13,7 @@ REPOS = 'scripts', 'dotfiles'
 
 
 def task(message):
-    print(green(message))
+    print(green(message, bold=True))
 
 
 def info(message):
@@ -25,7 +25,7 @@ def warning(message):
 
 
 def error(message):
-    print(red(message))
+    print(red(message, bold=True))
     exit(1)
 
 
