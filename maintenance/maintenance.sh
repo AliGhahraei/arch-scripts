@@ -23,6 +23,7 @@ check_clean_tree () {
    builtin cd $1
    if [ -n "$(git status --porcelain)" ]; then
       warning "Commit your files! $1 tree was not clean."
+      return 1
    fi
 }
 
@@ -49,8 +50,12 @@ message 'Upgrading shell...'
 $current_dir/./fisher_update.fish
 
 message 'Checking git repos'
-check_clean_tree ~/g/scripts
-check_clean_tree ~/g/dotfiles
+clean_scripts=check_clean_tree ~/g/scripts
+clean_dotfiles=check_clean_tree ~/g/dotfiles
+
+if [[ $clean_scripts -eq 0  ]] && [[ $clean_dotfiles -eq 0 ]]; then
+    message "Everything's clean!"
+fi
 
 message 'Launching backup tool'
 open -a MEGAsync &
