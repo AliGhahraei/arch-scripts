@@ -47,7 +47,7 @@ def tree_clean(dir_):
 
     if is_dirty:
         warning(f"Commit your files! {dir_}'s tree was not clean")
-    return is_dirty
+    return not is_dirty
 
 
 info('Upgrading pip...')
