@@ -50,8 +50,10 @@ message 'Upgrading shell...'
 $current_dir/./fisher_update.fish
 
 message 'Checking git repos'
-clean_scripts=check_clean_tree ~/g/scripts
-clean_dotfiles=check_clean_tree ~/g/dotfiles
+check_clean_tree "$HOME/g/scripts"
+clean_scripts=$?
+check_clean_tree "$HOME/g/dotfiles"
+clean_dotfiles=$?
 
 if [[ $clean_scripts -eq 0  ]] && [[ $clean_dotfiles -eq 0 ]]; then
     message "Everything's clean!"
