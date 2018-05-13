@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 from json import loads
+from os import listdir
 from os.path import expanduser, join
 from platform import system
 
-from crayons import red, green, yellow, blue
+from crayons import green, yellow, blue
+#pylint: disable=no-name-in-module
 from sh import brew, git, pip3
 
 
 SYSTEM = system()
 GIT_DIR = expanduser(join('~', 'g'))
-REPOS = 'scripts', 'dotfiles'
+REPOS = listdir(GIT_DIR)
 
 
 def task(message):
-    print(green(message, bold=True))
+    print(f'\n{green(message, bold=True)}')
 
 
 def info(message):
@@ -22,11 +24,6 @@ def info(message):
 
 def warning(message):
     print(yellow(message))
-
-
-def error(message):
-    print(red(message, bold=True))
-    exit(1)
 
 
 if SYSTEM == 'Darwin':
@@ -47,29 +44,31 @@ def pip_upgrade():
 
 
 def tree_clean(dir_):
+    #pylint: disable=too-many-function-args
     is_dirty = bool(git('-C', dir_, 'status', '--porcelain').stdout)
 
     if is_dirty:
-        warning(f"Commit your files! {dir_}'s tree was not clean")
+        warning(f"{dir_}'s tree was not clean")
     return not is_dirty
 
 
-task('Upgrading pip...')
-pip_upgrade()
+if __name__ == '__main__':
+    task('Upgrading pip...')
+    pip_upgrade()
 
-if SYSTEM == 'Darwin':
-    task('Upgrading brew...')
-    brew('update', _fg=True)
-    brew('upgrade', _fg=True)
-    brew('cask', 'upgrade', _fg=True)
-else:
-    warning(f"Package managers for {SYSTEM} aren't supported")
+    if SYSTEM == 'Darwin':
+        task('Upgrading brew...')
+        brew('update', _fg=True)
+        brew('upgrade', _fg=True)
+        brew('cask', 'upgrade', _fg=True)
+    else:
+        warning(f"Package managers for {SYSTEM} aren't supported")
 
-task('Checking git repos...')
-if all([tree_clean(join(GIT_DIR, repo)) for repo in REPOS]):
-    info("Everything's clean!")
+    task('Checking git repos...')
+    if all([tree_clean(join(GIT_DIR, repo)) for repo in REPOS]):
+        info("Everything's clean!")
 
-task('Launching backup tool...')
-os_open('-a', 'MEGAsync', _bg=True)
-warning('Remember to update Emacs manually')
-info('Done!')
+    task('Launching backup tool...')
+    os_open('-a', 'MEGAsync', _bg=True)
+    warning('Remember to update Emacs manually')
+    info('Done!')
