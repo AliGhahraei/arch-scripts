@@ -6,6 +6,7 @@ from platform import system
 
 from crayons import green, yellow, blue
 from sh import brew, git, pip3  #pylint: disable=no-name-in-module
+from sh.contrib import sudo
 
 
 SYSTEM = system()
@@ -37,7 +38,8 @@ def pip_upgrade():
                                                                    '--format=json',
                                                                    '--outdated').stdout)]
     if outdated_packages:
-        pip3('install', '-U', *outdated_packages, _fg=True)
+        with sudo:
+            pip3('install', '-U', *outdated_packages, _fg=True)
 
     pip3('install', '--upgrade', 'pip', _fg=True)
 
