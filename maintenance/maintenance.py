@@ -34,11 +34,11 @@ else:
 
 
 def pip_upgrade():
-    outdated_packages = [package['name'] for package in loads(pip3('list',
-                                                                   '--format=json',
-                                                                   '--outdated').stdout)]
-    if outdated_packages:
-        with sudo:
+    with sudo:
+        outdated_packages = [package['name'] for package in loads(pip3('list',
+                                                                       '--format=json',
+                                                                       '--outdated').stdout)]
+        if outdated_packages:
             pip3('install', '-U', *outdated_packages, _fg=True)
 
     pip3('install', '--upgrade', 'pip', _fg=True)
