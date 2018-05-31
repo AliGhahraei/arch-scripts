@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from contextlib import contextmanager
 from json import loads
 from os import listdir
 from os.path import expanduser, join
@@ -6,24 +7,12 @@ from platform import system
 
 from crayons import green, yellow, blue
 from sh import brew, git, pip3  #pylint: disable=no-name-in-module
-from sh.contrib import sudo
+from sh.contrib import sudo as sh_sudo
 
 
 SYSTEM = system()
 GIT_DIR = expanduser(join('~', 'g'))
 REPOS = listdir(GIT_DIR)
-
-
-def task(message):
-    print(f'\n{green(message, bold=True)}')
-
-
-def info(message):
-    print(blue(message))
-
-
-def warning(message):
-    print(yellow(message))
 
 
 if SYSTEM == 'Darwin':
@@ -33,26 +22,7 @@ else:
         warning(f'MEGAsync not supported for {SYSTEM}')
 
 
-def pip_upgrade():
-    with sudo:
-        outdated_packages = [package['name'] for package in loads(pip3('list',
-                                                                       '--format=json',
-                                                                       '--outdated').stdout)]
-        if outdated_packages:
-            pip3('install', '-U', *outdated_packages, _fg=True)
-
-    pip3('install', '--upgrade', 'pip', _fg=True)
-
-
-def tree_clean(dir_):
-    git_status = git('-C', dir_, 'status', '--porcelain') #pylint: disable=too-many-function-args
-    is_dirty = bool(git_status.stdout)
-    if is_dirty:
-        warning(f"{dir_}'s tree was not clean")
-    return not is_dirty
-
-
-if __name__ == '__main__':
+def main():
     task('Upgrading pip...')
     pip_upgrade()
 
@@ -72,3 +42,45 @@ if __name__ == '__main__':
     os_open('-a', 'MEGAsync', _bg=True)
     warning('Remember to update Emacs manually')
     info('Done!')
+
+
+def task(message):
+    print(f'\n{green(message, bold=True)}')
+
+
+def info(message):
+    print(blue(message))
+
+
+def warning(message):
+    print(yellow(message))
+
+
+def pip_upgrade():
+    outdated_packages = [package['name'] for package in loads(pip3('list',
+                                                                   '--format=json',
+                                                                   '--outdated').stdout)]
+    if outdated_packages:
+        with sudo():
+            pip3('install', '-U', *outdated_packages, _fg=True)
+
+    pip3('install', '--upgrade', 'pip', _fg=True)
+
+
+@contextmanager
+def sudo():
+    print('\a')
+    with sh_sudo:
+        yield
+
+
+def tree_clean(dir_):
+    git_status = git('-C', dir_, 'status', '--porcelain') #pylint: disable=too-many-function-args
+    is_dirty = bool(git_status.stdout)
+    if is_dirty:
+        warning(f"{dir_}'s tree was not clean")
+    return not is_dirty
+
+
+if __name__ == '__main__':
+    main()
