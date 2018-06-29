@@ -72,7 +72,7 @@ def sudo():
 
 
 def tree_clean(dir_):
-    git_status = git('-C', dir_, 'status', '--porcelain') #pylint: disable=too-many-function-args
+    git_status = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain') #pylint: disable=too-many-function-args
     is_dirty = bool(git_status.stdout)
     if is_dirty:
         warning(f"{dir_}'s tree was not clean")
