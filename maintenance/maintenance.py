@@ -23,9 +23,6 @@ else:
 
 
 def main():
-    task('Upgrading pip...')
-    pip_upgrade()
-
     if SYSTEM == 'Darwin':
         task('Upgrading brew...')
         brew('update', _fg=True)
@@ -54,17 +51,6 @@ def info(message):
 
 def warning(message):
     print(yellow(message))
-
-
-def pip_upgrade():
-    outdated_packages = [package['name'] for package in loads(pip3('list',
-                                                                   '--format=json',
-                                                                   '--outdated').stdout)]
-    if outdated_packages:
-        with sudo():
-            pip3('install', '-U', *outdated_packages, _fg=True)
-
-    pip3('install', '--upgrade', 'pip', _fg=True)
 
 
 @contextmanager
