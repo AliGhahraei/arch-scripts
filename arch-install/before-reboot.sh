@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # DISCLAIMER: please change this script's values to fit your needs before running it.
 
 # wpa_actiond and dialog are for wireless support. sudo, xorg and xorg-xinit are 
