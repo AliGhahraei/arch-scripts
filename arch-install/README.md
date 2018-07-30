@@ -1,4 +1,6 @@
 # Installation
 Scripts I use to automate my Arch Linux installation process.
 
-Note: you should copy 50-synaptics.conf to /etc/X11/xorg.conf.d
+You can just run install.sh and that will execute the whole
+process or you can run the individual scripts, but you'd have
+to run utils.sh once.
