@@ -6,7 +6,7 @@ from os.path import expanduser, join
 from platform import system
 
 from crayons import green, yellow, blue
-from sh import git  #pylint: disable=no-name-in-module
+from sh import git, doom  #pylint: disable=no-name-in-module
 from sh.contrib import sudo as sh_sudo
 
 
@@ -48,8 +48,8 @@ def main():
     task('Launching backup tool...')
     megasync()
 
-    task('Updating emacs...')
-    git('-C', expanduser(join('~', '.emacs.d')), 'pull', _fg=True)
+    task('Updating doom...')
+    doom('upgrade')
     info('Done!')
 
 
