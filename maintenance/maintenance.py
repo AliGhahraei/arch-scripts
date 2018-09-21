@@ -49,7 +49,7 @@ def main():
     megasync()
 
     task('Updating doom...')
-    doom('upgrade')
+    doom('upgrade', _fg=True)
     info('Done!')
 
 
