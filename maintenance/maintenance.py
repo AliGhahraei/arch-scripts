@@ -49,8 +49,9 @@ def main():
     megasync()
 
     task('Updating doom...')
-    doom('update', _fg=True)
     doom('upgrade', _fg=True)
+    doom('update', _fg=True)
+    doom('refresh', _fg=True)
     info('Done!')
 
 
