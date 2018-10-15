@@ -15,8 +15,6 @@ GIT_DIR = expanduser(join('~', 'g'))
 REPOS = listdir(GIT_DIR)
 
 
-
-
 def main():
     if SYSTEM == 'Darwin':
         from sh import open as os_open, brew  #pylint: disable=no-name-in-module
@@ -40,18 +38,18 @@ def main():
 
         warning(f"Package managers for {SYSTEM} aren't supported")
 
+    task('Updating doom...')
+    doom('upgrade', _fg=True)
+    doom('update', _fg=True)
+    doom('refresh', _fg=True)
+
+    task('Launching backup tool...')
+    megasync()
 
     task('Checking git repos...')
     if all([tree_clean(join(GIT_DIR, repo)) for repo in REPOS]):
         info("Everything's clean!")
 
-    task('Launching backup tool...')
-    megasync()
-
-    task('Updating doom...')
-    doom('upgrade', _fg=True)
-    doom('update', _fg=True)
-    doom('refresh', _fg=True)
     info('Done!')
 
 
