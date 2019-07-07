@@ -1,60 +1,34 @@
 #!/usr/bin/env python3
-from contextlib import contextmanager
-from json import loads
 from os import listdir
 from os.path import expanduser, join
 from platform import system
 
-from crayons import green, yellow, blue
-from sh import git, doom  #pylint: disable=no-name-in-module
-from sh.contrib import sudo as sh_sudo
+from crayons import magenta, yellow, blue
+from sh import git, doom, pipx
 
 
-SYSTEM = system()
 GIT_DIR = expanduser(join('~', 'g'))
-REPOS = listdir(GIT_DIR)
 
 
 def main():
-    if SYSTEM == 'Darwin':
-        from sh import open as os_open, brew  #pylint: disable=no-name-in-module
-
-        megasync = os_open.bake('-a', 'MEGAsync', _bg=True)
-
-        task('Upgrading with brew...')
-        brew('update', _fg=True)
-        brew('upgrade', _fg=True)
-        brew('cask', 'upgrade', _fg=True)
-    elif SYSTEM == 'Linux':
-        from sh import megasync as mega, pacaur
-
-        megasync = mega.bake(_bg=True)
-
-        task('Upgrading with pacaur...')
-        pacaur('-Syu', _fg=True)
-    else:
-        def megasync():
-            warning(f'MEGAsync not supported for {SYSTEM}')
-
-        warning(f"Package managers for {SYSTEM} aren't supported")
-
-    task('Updating doom...')
-    doom('upgrade', _fg=True)
-    doom('update', _fg=True)
-    doom('refresh', _fg=True)
-
-    task('Launching backup tool...')
+    megasync, upgrade_os = get_platform_commands(system())
+    upgrade_os()
+    upgrade_pipx()
+    upgrade_doom()
     megasync()
-
-    task('Checking git repos...')
-    if all([tree_clean(join(GIT_DIR, repo)) for repo in REPOS]):
-        info("Everything's clean!")
-
+    check_repos_clean()
     info('Done!')
 
 
 def task(message):
-    print(f'\n{green(message, bold=True)}')
+    def decorator(f):
+        def wrapper(*args, **kwargs):
+            dotted_message = f'{message}...'
+            print(f'\n{magenta(dotted_message, bold=True)}')
+            f(*args, **kwargs)
+
+        return wrapper
+    return decorator
 
 
 def info(message):
@@ -65,19 +39,71 @@ def warning(message):
     print(yellow(message))
 
 
-@contextmanager
-def sudo():
-    print('\a')
-    with sh_sudo:
-        yield
+def get_platform_commands(current_platform):
+    os_upgrade_commands = {
+        'Darwin': get_macos_commands,
+        'Linux': get_arch_linux_commands,
+    }
+    try:
+        megasync_without_prompt, upgrade_os = os_upgrade_commands[current_platform]()
+        megasync = task('Launching backup tool')(megasync_without_prompt)
+    except KeyError:
+        def megasync():
+            warning(f'MEGAsync not supported for {current_platform}')
+
+        def upgrade_os():
+            warning(f"Package managers for {current_platform} aren't supported")
+    return megasync, upgrade_os
 
 
-def tree_clean(dir_):
-    git_status = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain') #pylint: disable=too-many-function-args
-    is_dirty = bool(git_status.stdout)
-    if is_dirty:
-        warning(f"{dir_}'s tree was not clean")
-    return not is_dirty
+def get_macos_commands():
+    from sh import open, brew
+
+    @task('Upgrading with brew')
+    def upgrade_macos():
+        brew('update', _fg=True)
+        brew('upgrade', _fg=True)
+        brew('cask', 'upgrade', _fg=True)
+
+    return open.bake('-a', 'MEGAsync', _bg=True), upgrade_macos
+
+
+def get_arch_linux_commands():
+    from sh import megasync, pacaur
+
+    @task('Upgrading with pacaur')
+    def upgrade_arch():
+        pacaur('-Syu', _fg=True)
+
+    return megasync.bake(_bg=True), upgrade_arch
+
+
+@task('Upgrading pipx packages')
+def upgrade_pipx():
+    pipx('upgrade-all', _fg=True)
+
+
+@task('Updating/upgrading doom')
+def upgrade_doom():
+    doom('upgrade', _fg=True)
+    doom('update', _fg=True)
+    doom('refresh', _fg=True)
+
+
+@task('Checking git repos')
+def check_repos_clean():
+    def is_tree_dirty(dir_):
+        git_status = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain')
+        is_dirty = bool(git_status.stdout)
+        return is_dirty
+
+    all_repos = [join(GIT_DIR, repo) for repo in listdir(GIT_DIR)]
+    dirty_repos = [repo for repo in all_repos if is_tree_dirty(repo)]
+    if dirty_repos:
+        for repo in dirty_repos:
+            warning(f"{repo}'s tree was not clean")
+    else:
+        info("Everything's clean!")
 
 
 if __name__ == '__main__':
