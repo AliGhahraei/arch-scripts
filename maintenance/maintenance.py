@@ -87,7 +87,6 @@ def upgrade_pipx():
 @task('Updating/upgrading doom')
 def upgrade_doom():
     doom('upgrade', _fg=True)
-    raise Exception
 
 
 @task('Checking git repos')
