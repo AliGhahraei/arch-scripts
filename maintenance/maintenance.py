@@ -4,7 +4,7 @@ from os.path import expanduser, join
 from platform import system
 
 from crayons import magenta, yellow, blue
-from sh import git, doom, pipx
+from sh import git, doom, pipx, ErrorReturnCode_128
 
 
 GIT_DIR = expanduser(join('~', 'g'))
@@ -92,7 +92,10 @@ def upgrade_doom():
 @task('Checking git repos')
 def check_repos_clean():
     def is_tree_dirty(dir_):
-        git_status = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain')
+        try:
+            git_status = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain')
+        except ErrorReturnCode_128 as e:
+            raise ValueError(f'Invalid repository: {dir_}') from e
         is_dirty = bool(git_status.stdout)
         return is_dirty
 
