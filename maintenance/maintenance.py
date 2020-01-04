@@ -85,9 +85,7 @@ def upgrade_pipx():
 
 @task('Updating/upgrading doom')
 def upgrade_doom():
-    doom('update', _fg=True)
     doom('upgrade', _fg=True)
-    doom('refresh', _fg=True)
 
 
 @task('Checking git repos')
