@@ -46,13 +46,14 @@ def get_platform_commands(current_platform):
     }
     try:
         megasync_without_prompt, upgrade_os = os_upgrade_commands[current_platform]()
-        megasync = task('Launching backup tool')(megasync_without_prompt)
     except KeyError:
         def megasync():
             warning(f'MEGAsync not supported for {current_platform}')
 
         def upgrade_os():
             warning(f"Package managers for {current_platform} aren't supported")
+    else:
+        megasync = task('Launching backup tool')(megasync_without_prompt)
     return megasync, upgrade_os
 
 
@@ -86,6 +87,7 @@ def upgrade_pipx():
 @task('Updating/upgrading doom')
 def upgrade_doom():
     doom('upgrade', _fg=True)
+    raise Exception
 
 
 @task('Checking git repos')
