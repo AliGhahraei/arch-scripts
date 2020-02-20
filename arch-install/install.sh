@@ -3,7 +3,7 @@ LOCALE="${LOCALE:-en_US.UTF-8}"
 HOSTNAME="ali"
 
 
-pacstrap /mnt base base-devel
+pacstrap /mnt base base-devel linux linux-firmware refind-efi
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
