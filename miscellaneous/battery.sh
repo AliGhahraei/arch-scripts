@@ -1,7 +1,7 @@
 #!/bin/bash
 
-BATTERY_LIMIT="11"
-BATTERY_PATH="/sys/class/power_supply/BAT1/"
+BATTERY_LIMIT="8"
+BATTERY_PATH="/sys/class/power_supply/BAT0/"
 
 BATTERY_STATE=$(cat $BATTERY_PATH/status)
 if [ "$BATTERY_STATE" == "Discharging" ]; then
