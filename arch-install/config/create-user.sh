@@ -5,7 +5,7 @@ TTY_FILE='/etc/systemd/system/getty@tty1.service.d/override.conf'
 
 msg 'Creating user, setting its password and adding it to sudoers'
 
-useradd -m -G wheel -s /bin/bash $USER
+useradd -m -G wheel -s /usr/bin/fish $USER
 passwd $USER
 echo "$USER ALL=(ALL) ALL" >> /etc/sudoers
 

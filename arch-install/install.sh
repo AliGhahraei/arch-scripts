@@ -24,5 +24,6 @@ refind-install
 msg "Don't forget to check /etc/fstab, uncomment /etc/locale.gen and run 
 locale-gen. DONE!"
 
-config/create-user.sh && config/enable-systemd-timers.sh && 
-	config/install-additional-programs.sh
+config/install-additional-programs.sh && config/create-user.sh &&
+	config/enable-systemd-timers.sh
+
