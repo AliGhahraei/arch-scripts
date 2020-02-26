@@ -11,11 +11,10 @@ GIT_DIR = expanduser(join('~', 'g'))
 
 
 def main():
-    megasync, upgrade_os = get_platform_commands(system())
+    upgrade_os = get_platform_commands(system())
     upgrade_os()
     upgrade_pipx()
     upgrade_doom()
-    megasync()
     check_repos_clean()
     info('Done!')
 
@@ -45,16 +44,11 @@ def get_platform_commands(current_platform):
         'Linux': get_arch_linux_commands,
     }
     try:
-        megasync_without_prompt, upgrade_os = os_upgrade_commands[current_platform]()
+        upgrade_os = os_upgrade_commands[current_platform]()
     except KeyError:
-        def megasync():
-            warning(f'MEGAsync not supported for {current_platform}')
-
         def upgrade_os():
             warning(f"Package managers for {current_platform} aren't supported")
-    else:
-        megasync = task('Launching backup tool')(megasync_without_prompt)
-    return megasync, upgrade_os
+    return upgrade_os
 
 
 def get_macos_commands():
@@ -66,17 +60,17 @@ def get_macos_commands():
         brew('upgrade', _fg=True)
         brew('cask', 'upgrade', _fg=True)
 
-    return open.bake('-a', 'MEGAsync', _bg=True), upgrade_macos
+    return upgrade_macos
 
 
 def get_arch_linux_commands():
-    from sh import megasync, pacaur
+    from sh import yay
 
-    @task('Upgrading with pacaur')
+    @task('Upgrading with yay')
     def upgrade_arch():
-        pacaur('-Syu', _fg=True)
+        yay('-Syu', _fg=True)
 
-    return megasync.bake(_bg=True), upgrade_arch
+    return upgrade_arch
 
 
 @task('Upgrading pipx packages')
