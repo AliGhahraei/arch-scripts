@@ -7,6 +7,7 @@ from crayons import magenta, yellow, blue
 from sh import git, doom, pipx, ErrorReturnCode_128
 
 
+_SUBSTRING_ALWAYS_PRESENT_IN_NON_EMPTY_OUTPUT = '->'
 GIT_DIR = expanduser(join('~', 'g'))
 
 
@@ -93,7 +94,7 @@ def check_repos_clean():
         except ErrorReturnCode_128 as e:
             raise ValueError(f'Invalid repository: {dir_}') from e
 
-        is_dirty = any([_get_output(unsaved_changes), _is_not_empty_ignoring_escape_sequences(unpushed_commits)])
+        is_dirty = any([_decode_output(unsaved_changes), _is_not_empty_ignoring_escape_sequences(unpushed_commits)])
         return is_dirty
 
     all_repos = [join(GIT_DIR, repo) for repo in listdir(GIT_DIR)]
@@ -105,12 +106,12 @@ def check_repos_clean():
         info("Everything's clean!")
 
 
-def _get_output(output):
+def _decode_output(output):
     return output.stdout.decode('utf-8')
 
 
 def _is_not_empty_ignoring_escape_sequences(unpushed_commits_output):
-    return '->' in _get_output(unpushed_commits_output)
+    return _SUBSTRING_ALWAYS_PRESENT_IN_NON_EMPTY_OUTPUT in _decode_output(unpushed_commits_output)
 
 
 if __name__ == '__main__':
