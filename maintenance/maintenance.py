@@ -87,10 +87,13 @@ def upgrade_doom():
 def check_repos_clean():
     def is_tree_dirty(dir_):
         try:
-            git_status = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain')
+            unsaved_changes = git('-C', dir_, 'status', '--ignore-submodules', '--porcelain')
+            unpushed_commits = git('-C', dir_, 'log', '--branches', '--not', '--remotes',
+                                   '--oneline')
         except ErrorReturnCode_128 as e:
             raise ValueError(f'Invalid repository: {dir_}') from e
-        is_dirty = bool(git_status.stdout)
+
+        is_dirty = any([_get_output(unsaved_changes), _is_not_empty_ignoring_escape_sequences(unpushed_commits)])
         return is_dirty
 
     all_repos = [join(GIT_DIR, repo) for repo in listdir(GIT_DIR)]
@@ -100,6 +103,14 @@ def check_repos_clean():
             warning(f"{repo}'s tree was not clean")
     else:
         info("Everything's clean!")
+
+
+def _get_output(output):
+    return output.stdout.decode('utf-8')
+
+
+def _is_not_empty_ignoring_escape_sequences(unpushed_commits_output):
+    return '->' in _get_output(unpushed_commits_output)
 
 
 if __name__ == '__main__':
