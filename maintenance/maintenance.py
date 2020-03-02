@@ -3,7 +3,7 @@ from os import listdir
 from os.path import expanduser, join
 from platform import system
 
-from crayons import magenta, yellow, blue
+from colored import fg, attr, stylize
 from sh import git, doom, pipx, ErrorReturnCode_128
 
 
@@ -20,11 +20,15 @@ def main():
     info('Done!')
 
 
+def colorize(message, foreground, *styles):
+    return stylize(message, styles=[fg(foreground), *("".join(attr(style) for style in styles))])
+
+
 def task(message):
     def decorator(f):
         def wrapper(*args, **kwargs):
             dotted_message = f'{message}...'
-            print(f'\n{magenta(dotted_message, bold=True)}')
+            print(colorize(dotted_message, 'magenta', 'bold'))
             f(*args, **kwargs)
 
         return wrapper
@@ -32,11 +36,11 @@ def task(message):
 
 
 def info(message):
-    print(blue(message))
+    print(colorize(message, 'cyan'))
 
 
 def warning(message):
-    print(yellow(message))
+    print(colorize(message, 'yellow'))
 
 
 def get_platform_commands(current_platform):
@@ -79,7 +83,7 @@ def upgrade_pipx():
     pipx('upgrade-all', _fg=True)
 
 
-@task('Updating/upgrading doom')
+@task('Upgrading doom')
 def upgrade_doom():
     doom('upgrade', _fg=True)
 
