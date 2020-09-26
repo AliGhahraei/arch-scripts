@@ -63,7 +63,6 @@ def get_macos_commands():
     def upgrade_macos():
         brew('update', _fg=True)
         brew('upgrade', _fg=True)
-        brew('cask', 'upgrade', _fg=True)
 
     return upgrade_macos
 
