@@ -4,7 +4,7 @@ from os.path import expanduser, join
 from platform import system
 
 from colored import fg, attr, stylize
-from sh import git, doom, pipx, ErrorReturnCode_128
+from sh import git, doom, pipx, ErrorReturnCode_128, asdf
 
 
 _SUBSTRING_ALWAYS_PRESENT_IN_NON_EMPTY_OUTPUT = '->'
@@ -14,7 +14,7 @@ GIT_DIR = expanduser(join('~', 'g'))
 def main():
     upgrade_os = get_platform_commands(system())
     upgrade_os()
-    upgrade_pipx()
+    upgrade_python_tools()
     upgrade_doom()
     check_repos_clean()
     info('Done!')
@@ -77,9 +77,10 @@ def get_arch_linux_commands():
     return upgrade_arch
 
 
-@task('Upgrading pipx packages')
-def upgrade_pipx():
+@task('Upgrading python tools and packages')
+def upgrade_python_tools():
     pipx('upgrade-all', _fg=True)
+    asdf('update', _fg=True)
 
 
 @task('Upgrading doom')
