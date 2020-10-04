@@ -4,7 +4,7 @@ from os.path import expanduser, join
 from platform import system
 
 from colored import fg, attr, stylize
-from sh import git, doom, pipx, ErrorReturnCode_128, asdf
+from sh import git, doom, pipx, ErrorReturnCode_128
 
 
 _SUBSTRING_ALWAYS_PRESENT_IN_NON_EMPTY_OUTPUT = '->'
@@ -80,7 +80,6 @@ def get_arch_linux_commands():
 @task('Upgrading python tools and packages')
 def upgrade_python_tools():
     pipx('upgrade-all', _fg=True)
-    asdf('update', _fg=True)
 
 
 @task('Upgrading doom')
