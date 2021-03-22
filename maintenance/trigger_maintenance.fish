@@ -1,7 +1,6 @@
 #!/usr/bin/env fish
-set_color green --bold; echo 'Upgrading fisher...'; set_color normal
-if [ (uname) != "Linux" ]
-    fisher self-update
+if [ (uname) = "Linux" ]
+    set_color green --bold; echo 'Upgrading fisher...'; set_color normal
+    fisher update
 end
-fisher
 nix_maintenance
