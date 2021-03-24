@@ -18,8 +18,8 @@ msg "Setting hostname"
 echo $HOSTNAME > /etc/hostname
 
 msg "Adding hosts to /etc/hosts"
-echo "127.0.0.1\tlocalhost\n::1\tlocalhost\n127.0.1.1\tmyhostname.localdomain  
-\t$HOSTNAME" > /etc/hosts
+LOOPBACKS="127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1"
+echo -e "$LOOPBACKS\t$HOSTNAME.localdomain\t$HOSTNAME" > /etc/hosts
 
 msg "Setting root password"
 passwd
