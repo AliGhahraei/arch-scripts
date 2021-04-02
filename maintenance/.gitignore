@@ -96,5 +96,4 @@ ENV/
 # mypy
 .mypy_cache
 
-setup.py
 pip-wheel-metadata
