@@ -68,11 +68,11 @@ def get_macos_commands():
 
 
 def get_arch_linux_commands():
-    from sh import yay
+    from sh import paru
 
-    @task('Upgrading with yay')
+    @task('Upgrading with paru')
     def upgrade_arch():
-        yay('-Syu', _fg=True)
+        paru(_fg=True)
 
     return upgrade_arch
 
