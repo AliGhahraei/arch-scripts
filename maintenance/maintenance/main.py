@@ -41,7 +41,7 @@ class Commands:
     def upgrade_os():
         """Upgrade using native package manager (Homebrew/Arch's Paru only)."""
         def get_macos_commands():
-            from sh import open, brew
+            from sh import brew
 
             @task_title('Upgrading with brew')
             def upgrade_macos():
@@ -49,7 +49,6 @@ class Commands:
                 brew('upgrade', _fg=True)
 
             return upgrade_macos
-
 
         def get_arch_linux_commands():
             from sh import paru
@@ -79,7 +78,6 @@ class Commands:
         title('Upgrading pipx and packages')
         pipx('upgrade-all', _fg=True)
 
-
     @staticmethod
     def upgrade_doom():
         """Upgrade Doom Emacs distribution."""
@@ -93,8 +91,8 @@ class Commands:
             try:
                 unsaved_changes = git('-C', dir_, 'status',
                                       '--ignore-submodules', '--porcelain')
-                unpushed_commits = git('-C', dir_, 'log', '--branches', '--not',
-                                       '--remotes', '--oneline')
+                unpushed_commits = git('-C', dir_, 'log', '--branches',
+                                       '--not', '--remotes', '--oneline')
             except ErrorReturnCode_128 as e:
                 raise ValueError(f'Invalid repository: {dir_}') from e
 
