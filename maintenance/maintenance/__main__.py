@@ -1,4 +1,4 @@
 #!/usr/bin/env python3
-from maintenance.commands import run
+from maintenance.commands import app
 
-run()
+app()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-from colored import fg, attr, stylize
 from functools import wraps
+
+from typer import style
 
 
 def task_title(message):
@@ -16,7 +17,7 @@ def task_title(message):
 
 def title(message):
     dotted_message = f'\n{message}...'
-    print(_colorize(dotted_message, 'magenta', 'bold'))
+    print(_colorize(dotted_message, 'magenta', bold=True))
 
 
 def info(message):
@@ -27,5 +28,5 @@ def warning(message):
     print(_colorize(message, 'yellow'))
 
 
-def _colorize(message, foreground, *styles):
-    return stylize(message, styles=[fg(foreground), *("".join(attr(style) for style in styles))])
+def _colorize(message, foreground, **kwargs):
+    return style(message, foreground, **kwargs)
