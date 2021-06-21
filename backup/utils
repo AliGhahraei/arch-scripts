@@ -1,0 +1,9 @@
+#!/usr/bin/sh
+set -eu
+
+restic_repo ()
+{
+    restic -r rclone:box_remote:backup \
+        --password-command="secret-tool lookup program restic remote \
+        box_remote" "$@"
+}

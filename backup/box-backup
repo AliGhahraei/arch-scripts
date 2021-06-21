@@ -1,0 +1,19 @@
+#!/usr/bin/sh
+set -eu
+
+DIR=$(dirname "$0")
+. "$DIR/utils"
+
+
+for repo in $BACKUP_PATHS
+do
+    restic_repo backup "$repo"
+done
+
+restic_repo forget --prune \
+    --keep-daily 7 \
+    --keep-weekly 4 \
+    --keep-monthly 12 \
+    --keep-yearly 2 \
+
+restic_repo check
