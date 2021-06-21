@@ -1,6 +1,9 @@
 #!/usr/bin/sh
 set -eu
 
+export BORG_PASSCOMMAND="secret-tool lookup program borg remote disk"
+
+
 restic_repo ()
 {
     restic -r rclone:box_remote:backup \

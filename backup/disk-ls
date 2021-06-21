@@ -1,0 +1,8 @@
+#!/usr/bin/sh
+set -eu
+
+DIR=$(dirname "$0")
+. "$DIR/utils"
+
+
+borg list "$BACKUPDIR"
