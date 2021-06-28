@@ -2,6 +2,11 @@
 #
 # Convert a video to a whatsapp-compatible format
 
+if [ $# -ne 1 ]; then
+   >&2 echo 'Exactly 1 argument (input file) should be passed'
+   exit 1
+fi
+
 input_file="$1"
 base=$(basename "$input_file")
 input_stem="${base%.*}"
